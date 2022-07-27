@@ -3,9 +3,8 @@ const AddressModel = mongoose.model('UserAddress');
 const UserModel = mongoose.model('User');
 
 module.exports = {
-    get_all_addresses: async (req, res, next) => {
-          const addresses = await AddressModel.find({address: req.addressId}).select(
-              "pessoa_id cep logradouro numero complemento bairro cidade uf");
+    get_all_adressses: async (req, res, next) => {
+        const addresses = await AddressModel.find();
 
           res.status(200).json({
             count: addresses.length,
