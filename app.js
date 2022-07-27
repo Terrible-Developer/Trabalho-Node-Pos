@@ -17,7 +17,7 @@ require('./api/models/useradress');
 const app = express();
 
 const userRoutes = require('./api/routes/users');
-const userAddressRoutes = require('./api/routes/useradress');
+const userAddressRoutes = require('./api/routes/useraddress');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 let userAddressSchema = new mongoose.Schema({
+  _id: Object,
   pessoa_id: {type: String},
   cep: {type: String, required: true},
   logradouro: {type: String, lowercase: true},

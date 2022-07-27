@@ -1,7 +1,7 @@
 {
   "name": "aula",
   "version": "1.0.0",
-  "description": "Aula pós graduação UNIPAR",
+  "description": "Trabalho conclusão pós graduação UNIPAR",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,20 +12,12 @@
     "node",
     "npm"
   ],
-  "author": "Marlon Victor de Paula",
+  "author": "Bictor Pruno Varo & Fatheus Milherme Gerreira",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "express": "^4.18.1",
-    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.0",
-    "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1",
-    "nodemon": "^2.0.16",
-    "passport": "^0.6.0",
-    "passport-local": "^1.0.0",
-    "swagger-jsdoc": "^6.2.1",
-    "swagger-ui-express": "^4.4.0"
+    "nodemon": "^2.0.16"
   }
 }

@@ -4,50 +4,19 @@ const passport = require('passport');
 const UserModel = mongoose.model('User');
 
 module.exports = {
-    verifyJWT: function (req, res, next) {
-        const token = req.headers['x-access-token'];
-        if (!token) {
-            return res.status(401)
-                    .json({ 
-                        auth: false, 
-                        message: 'Token não informado.'
-                    });
-        }
-
-        jwt.verify(token, 'SECRET', function(err, decoded) {
-            if (err) {
-                return res.status(401)
-                .json({ 
-                    auth: false, 
-                    message: 'Falha na autenticação do token.'
-                });
-            }
-            req.userId = decoded._id;
-            req.userUsername = decoded.username;
-            next();
-        })
-    },
-
     get_all_users: async (req, res, next) => {
         try {
-          const usuarioLogado = await UserModel.findById(req.userId);
-          if (usuarioLogado.acesso != "Admin") {
-            res.status(401).json({message: "Usuario não permitido"});
-            return;
-          }
-          const users = await UserModel.find({user: req.userId}).select("username acesso");
+          const users = await UserModel.find();
         
           res.status(200).json({
             count: users.length,
             users: users.map(user => {
               return {
-                username: user.username,
-                acesso: user.acesso,
-                _id: user._id,
-                request: {
-                  type: "GET",
-                  url: "http://localhost:3000/users/" + user._id
-                }
+                nome: user.nome,
+                sobrenome: user.sobrenome,
+                telefone: user.telefone,
+                email: user.email,
+                status: user.status,
               }
             })
           });
@@ -57,6 +26,25 @@ module.exports = {
         }
       },
       get_by_id_users: async (req, res, next) => {
+        const id = req.params.userId;
+   
+        try {
+          const user = await UserModel.findById({_id: id});
+      
+          return {
+            nome: user.nome,
+            sobrenome: user.sobrenome,
+            telefone: user.telefone,
+            email: user.email,
+            status: user.status,
+          }
+      
+        } catch (err) {
+          console.log(err);
+          res.status(500).json(err);
+        }
+      },
+      delete_by_id_users: async (req, res, next) => {
         const id = req.params.userId;
         try {
           let status = await UserModel.deleteOne({_id: id});
@@ -71,25 +59,26 @@ module.exports = {
           res.status(500).json(err);
         }
       },
-      signup_user: async (req, res, next) => {
+      create_user: async (req, res, next) => {
         try {
       
           let user = new UserModel({});
-          user.username = req.body.username;
-          user.name = req.body.name;
-          //password: req.body.password
-          user.setPassword(req.body.password);
+          user.nome = req.body.username;
+          user.sobrenome = req.body.sobrenome;
+          user.telefone = req.body.telefone;
+          user.email = req.body.email;
+          user.status = req.body.status;
           
           user = await user.save();
+
           res.status(201).json({
             message: 'Created user successfully',
             createdUser: {
-                username: user.username,
-                _id: user._id,
-                request: {
-                    type: "GET",
-                    url: "http://localhost:3000/users/" + user._id
-                }
+                nome: user.nome,
+                sobrenome: user.sobrenome,
+                telefone: user.telefone,
+                email: user.email,
+                status: user.status
             }
           })
         } catch (err) {
@@ -97,19 +86,4 @@ module.exports = {
           res.status(500).json(err);
         }
       },
-      login_user: function(req, res, next){
-        if(!req.body.username || !req.body.password){
-          return res.status(400).json({message: 'Por favor, preencha todos os campos'});
-        }
-      
-        passport.authenticate('local', function(err, user, info){
-          if(err){ return next(err); }
-      
-          if(user){
-            return res.json({token: user.generateJWT()});
-          } else {
-            return res.status(401).json(info);
-          }
-        })(req, res, next);
-      }
 }

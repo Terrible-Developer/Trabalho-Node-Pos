@@ -4,13 +4,13 @@ const router = express.Router();
 const controllerUser = require('../controllers/user-controller');
 
 
-router.get('/', controllerUser.verifyJWT, controllerUser.get_all_users);
+router.get('/', controllerUser.get_all_users);
 
-router.post('/signup', controllerUser.signup_user);
+router.post('/create', controllerUser.create_user);
 
-router.post('/login', controllerUser.login_user);
+router.get('/:userId', controllerUser.get_by_id_users);
 
-router.delete('/:userId', controllerUser.verifyJWT, controllerUser.get_by_id_users);
+router.delete('/:userId', controllerUser.delete_by_id_users);
   
   
   module.exports = router;
