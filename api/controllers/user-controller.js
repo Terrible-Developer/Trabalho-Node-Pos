@@ -27,18 +27,28 @@ module.exports = {
       },
       get_by_id_users: async (req, res, next) => {
         const id = req.params.userId;
+
+        console.log(id);
    
         try {
+          console.log('Attempting to get model by id');
           const user = await UserModel.findById({_id: id});
-      
-          return {
-            nome: user.nome,
-            sobrenome: user.sobrenome,
-            telefone: user.telefone,
-            email: user.email,
-            status: user.status,
+          if(user === null || user === undefined){
+            res.status(200).json ({
+              response: 'Não existe nenhum usuário com esta id'
+            });
+          }
+          else{
+            res.status(200).json ({
+              nome: user.nome,
+              sobrenome: user.sobrenome,
+              telefone: user.telefone,
+              email: user.email,
+              status: user.status,
+            });
           }
       
+
         } catch (err) {
           console.log(err);
           res.status(500).json(err);
@@ -63,7 +73,7 @@ module.exports = {
         try {
       
           let user = new UserModel({});
-          user.nome = req.body.username;
+          user.nome = req.body.nome;
           user.sobrenome = req.body.sobrenome;
           user.telefone = req.body.telefone;
           user.email = req.body.email;

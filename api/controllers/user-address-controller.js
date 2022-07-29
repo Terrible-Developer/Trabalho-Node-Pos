@@ -3,7 +3,7 @@ const AddressModel = mongoose.model('UserAddress');
 const UserModel = mongoose.model('User');
 
 module.exports = {
-    get_all_adressses: async (req, res, next) => {
+    get_all_addresses: async (req, res, next) => {
         const addresses = await AddressModel.find();
 
           res.status(200).json({
@@ -25,16 +25,30 @@ module.exports = {
 
     get_by_id_addresses:async (req, res, next) => {
         const id = req.params.addressId;
-        try {
-            let status = await AddressModel.findById({_id: id});
 
+        try {
+          const address = await AddressModel.findById({_id: id});
+          if(address === null || address === undefined){
             res.status(200).json({
-                message: 'Return user',
-                status: status
+              response: 'Não existe nenhum endereço com esta id'
             });
-        } catch(err){
-            console.log(err);
-            res.status(500).json(err);
+          }
+          else{
+            res.status(200).json ({
+              pessoa_id: address.pessoa_id,
+              cep: address.cep,
+              logradouro: address.logradouro,
+              numero: address.numero,
+              complemento: address.complemento,
+              bairro: address.bairro,
+              cidade: address.cidade,
+              uf: address.uf
+            });
+          }
+
+        } catch (err) {
+          console.log(err);
+          res.status(500).json(err);
         }
     },
 
@@ -43,10 +57,17 @@ module.exports = {
         try {
           let status = await AddressModel.deleteOne({_id: id});
 
-          res.status(200).json({
-              message: 'Delete user',
+          if(status === null || status === undefined){
+            res.status(200).json({
+              message: 'Não existe nenhum endereço com esta id'
+            });
+          }
+          else{
+            res.status(200).json({
+              message: 'Deletado com sucesso',
               status: status
-          });
+            });
+          }
 
         } catch (err) {
           console.log(err);
@@ -64,22 +85,22 @@ module.exports = {
               message: 'There is no user with this ID',
             });
           }
+          else{
+            let address = new AddressModel({});
+            address.pessoa_id = req.body.pessoa_id;
+            address.cep = req.body.cep;
+            address.logradouro = req.body.logradouro;
+            address.numero = req.body.numero;
+            address.bairro = req.body.bairro;
+            address.cidade = req.body.cidade;
+            address.uf = req.body.uf;
 
-          let address = new AddressModel({});
-          address.pessoa_id = req.body.pessoa_id;
-          address.cep = req.body.cep;
-          address.logradouro = req.body.logradouro;
-          address.numero = req.body.numero;
-          address.bairro = req.body.bairro;
-          address.cidade = req.body.cidade;
-          address.uf = req.body.uf;
-          
 
-          address = await address.save();
+            address = await address.save();
 
-          res.status(201).json({
-            message: 'Created address successfully',
-            createdAddress: {
+            res.status(201).json({
+              message: 'Created address successfully',
+              createdAddress: {
                 pessoa_id: address.pessoa_id,
                 cep: address.cep,
                 logradouro: address.logradouro,
@@ -87,8 +108,10 @@ module.exports = {
                 complemento: address.complemento,
                 cidade: address.cidade,
                 uf: address.uf,
-            }
-          });
+              }
+            });
+          }
+
         } catch (err) {
           console.log(err);
           res.status(500).json(err);

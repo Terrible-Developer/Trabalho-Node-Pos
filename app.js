@@ -37,7 +37,7 @@ const cors = (req, res, next) => {
 app.use(cors);
 
 app.use('/users', userRoutes);
-app.use('/useradress', userAddressRoutes);
+app.use('/useraddress', userAddressRoutes);
 
 app.use('/api', (req, res, next) => {
     res.status(200).json({
